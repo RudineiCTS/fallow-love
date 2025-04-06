@@ -1,19 +1,29 @@
-import { Stack, useLocalSearchParams } from 'expo-router';
-import {
-  ImageBackground,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-  ScrollView,
-  TouchableOpacity,
-} from 'react-native';
-
-import StreetIcon from '../assets/street-icon.svg';
+import { Link, Stack } from 'expo-router';
+import { useState } from 'react';
+import { ImageBackground, ScrollView, StyleSheet, Text, View } from 'react-native';
+import MaskInput, { Masks } from 'react-native-mask-input';
 
 import { Button } from '~/components/Button';
+import { YesOrNot } from '~/components/YesOrNot';
+
+interface DumObjType {
+  firstDay: string;
+  timeDuration: string;
+  howMuchDay: string;
+}
 
 export default function Details() {
+  const [dum, setDum] = useState<DumObjType>();
+
+  function atualizarDados(key: string, value: any) {
+    setDum((prevUsuario: any) => ({
+      ...prevUsuario,
+      [key]: value,
+    }));
+  }
+
+  function handleTakeInfo() {}
+
   return (
     <>
       <Stack.Screen options={{ title: 'Details', headerShown: false }} />
@@ -24,32 +34,54 @@ export default function Details() {
         <View style={styles.containerHeader}>
           {/* Título */}
           <Text style={styles.title}>
-            <Text style={styles.bold}>BUSCANDO{'\n'}INFORMAÇÃO</Text>
+            <Text style={styles.bold}>Pergunte a sua {'\n'}parceira</Text>
           </Text>
         </View>
         <ScrollView contentContainerStyle={styles.form}>
           {/* Perguntas */}
           <View style={styles.questionBox}>
             <Text style={styles.question}>Qual foi o primeiro dia da sua última menstruação?</Text>
-            <TextInput style={styles.input} placeholder="Digite a data..." />
+            <MaskInput
+              value={dum?.firstDay ?? ''}
+              mask={Masks.DATE_DDMMYYYY}
+              onChangeText={(e) => atualizarDados('firstDay', e)}
+              style={styles.input}
+              placeholder="Digite a data..."
+              keyboardType="number-pad"
+            />
           </View>
 
           <View style={styles.questionBox}>
             <Text style={styles.question}>Quanto tempo, em média, dura o seu ciclo menstrual?</Text>
-            <TextInput style={styles.input} placeholder="Ex: 28 dias" keyboardType="numeric" />
+            <MaskInput
+              style={styles.input}
+              placeholder="Ex: 28 dias"
+              keyboardType="numeric"
+              onChangeText={(e) => atualizarDados('timeDuration', e)}
+              value={dum?.timeDuration}
+            />
           </View>
 
           <View style={styles.questionBox}>
             <Text style={styles.question}>Quantos dias, em média, você menstrua?</Text>
-            <TextInput style={styles.input} placeholder="Ex: 5 dias" keyboardType="numeric" />
+            <MaskInput
+              style={styles.input}
+              placeholder="Ex: 5 dias"
+              keyboardType="numeric"
+              value={dum?.howMuchDay}
+              onChangeText={(e) => atualizarDados('howMuchDay', e)}
+            />
           </View>
 
           <View style={styles.questionBox}>
             <Text style={styles.question}>Gostaria de acompanhar sua fase fértil e ovulação?</Text>
-            <TextInput style={styles.input} placeholder="Sim ou Não" />
+            {/* <TextInput style={styles.input} placeholder="Sim ou Não" /> */}
+            <YesOrNot />
           </View>
         </ScrollView>
-        <Button title="Avançar" styleCustom={styles.button} />
+        <Link href={{ pathname: '/profile', params: { name: 'Dan' } }} asChild>
+          <Button title="Avançar" styleCustom={styles.button} />
+        </Link>
       </ImageBackground>
     </>
   );

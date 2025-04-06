@@ -12,6 +12,7 @@ import {
 type ButtonProps = {
   title?: string;
   styleCustom?: StyleProp<ViewStyle>;
+  takeInfo?: () => void;
 } & TouchableOpacityProps;
 
 export const Button = forwardRef<View, ButtonProps>(
